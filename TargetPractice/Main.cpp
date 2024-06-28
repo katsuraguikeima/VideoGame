@@ -6,8 +6,8 @@ namespace fs = std::filesystem;
 #include"Model.h"
 
 
-const unsigned int width = 800;
-const unsigned int height = 800;
+const unsigned int width = 900;
+const unsigned int height = 700;
 
 
 
@@ -60,6 +60,8 @@ int main()
 	// Tell GLFW we are using the CORE profile
 	// So that means we only have the modern functions
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	// Configure GLFW so that the window is not resizable
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
 	// Create a GLFWwindow object of 800 by 800 pixels, naming it "YoutubeOpenGL"
 	GLFWwindow* window = glfwCreateWindow(width, height, "Target practice", NULL, NULL);
@@ -76,12 +78,8 @@ int main()
 	//Load GLAD so it configures OpenGL
 	gladLoadGL();
 	// Specify the viewport of OpenGL in the Window
-	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
+	// In this case the viewport goes from x = 0, y = 0, to x = 900, y = 700
 	glViewport(0, 0, width, height);
-
-
-
-
 
 	// Generates Shader objects
 	Shader shaderProgram("default.vert", "default.frag");
@@ -97,10 +95,6 @@ int main()
 	skyboxShader.Activate();
 	glUniform1i(glGetUniformLocation(skyboxShader.ID, "skybox"), 0);
 
-
-
-	
-
 	// Enables the Depth Buffer
 	glEnable(GL_DEPTH_TEST);
 
@@ -115,30 +109,11 @@ int main()
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 20.0f));
 
 
-	/*
-	* I'm doing this relative path thing in order to centralize all the resources into one folder and not
-	* duplicate them between tutorial folders. You can just copy paste the resources from the 'Resources'
-	* folder and then give a relative path from this folder to whatever resource you want to get to.
-	* Also note that this requires C++17, so go to Project Properties, C/C++, Language, and select C++17
-	*/
 	std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
-	std::string modelPath = "/Target Practice/Resources/models/map/scene.gltf";
+	std::string modelPath = "/TargetPractice/Resources/models/map/scene.gltf";
 	
 	// Load in models
 	Model model((parentDir + modelPath).c_str());
-
-
-
-	// Variables to create periodic event for FPS displaying
-	double prevTime = 0.0;
-	double crntTime = 0.0;
-	double timeDiff;
-	// Keeps track of the amount of frames in timeDiff
-	unsigned int counter = 0;
-
-	// Use this to disable VSync (not advized)
-	//glfwSwapInterval(0);
-
 
 	// Create VAO, VBO, and EBO for the skybox
 	unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
@@ -160,12 +135,12 @@ int main()
 	// All the faces of the cubemap (make sure they are in this exact order)
 	std::string facesCubemap[6] =
 	{
-		 parentDir+"/Target Practice/Resources/skybox/right.png",
-		 parentDir + "/Target Practice/Resources/skybox/left.png",
-		 parentDir + "/Target Practice/Resources/skybox/top.png",
-		 parentDir + "/Target Practice/Resources/skybox/bottom.png",
-		 parentDir + "/Target Practice/Resources/skybox/front.png",
-		 parentDir + "/Target Practice/Resources/skybox/back.png"
+		 parentDir+"/TargetPractice/Resources/skybox/right.png",
+		 parentDir + "/TargetPractice/Resources/skybox/left.png",
+		 parentDir + "/TargetPractice/Resources/skybox/top.png",
+		 parentDir + "/TargetPractice/Resources/skybox/bottom.png",
+		 parentDir + "/TargetPractice/Resources/skybox/front.png",
+		 parentDir + "/TargetPractice/Resources/skybox/back.png"
 	};
 
 	// Creates the cubemap texture object
