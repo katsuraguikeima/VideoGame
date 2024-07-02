@@ -4,7 +4,7 @@ namespace fs = std::filesystem;
 //------------------------------
 
 #include"Model.h"
-
+#include<SFML/Audio.hpp>
 
 const unsigned int width = 900;
 const unsigned int height = 700;
@@ -114,6 +114,21 @@ int main()
 	
 	// Load in models
 	Model model((parentDir + modelPath).c_str());
+
+	sf::SoundBuffer buffer;
+	if (!buffer.loadFromFile((parentDir + "/TargetPractice/Resources/sounds/doom.ogg").c_str())) {
+		std::cerr << "Error al cargar el archivo de sonido" << std::endl;
+		return -1;
+	}
+
+	// Crea un objeto de sonido y configura el buffer
+	sf::Sound sound;
+	sound.setBuffer(buffer);
+
+	// Reproduce el sonido
+	sound.setLoop(true);
+
+	sound.play();
 
 	// Create VAO, VBO, and EBO for the skybox
 	unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
