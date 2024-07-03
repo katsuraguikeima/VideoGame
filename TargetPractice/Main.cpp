@@ -88,12 +88,16 @@ int main()
 	// Take care of all the light related things
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
+	Shader multipleShader("objectInstancing.vert", "default.frag");
 
 	shaderProgram.Activate();
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 	skyboxShader.Activate();
 	glUniform1i(glGetUniformLocation(skyboxShader.ID, "skybox"), 0);
+	multipleShader.Activate();
+	glUniform4f(glGetUniformLocation(multipleShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(multipleShader.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
 	// Enables the Depth Buffer
 	glEnable(GL_DEPTH_TEST);
@@ -106,14 +110,15 @@ int main()
 	glFrontFace(GL_CCW);
 
 	// Creates camera object
-	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 20.0f));
+	Camera camera(width, height, glm::vec3(0.0f, 4.0f, 0.0f));
 
 
 	std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
-	std::string modelPath = "/TargetPractice/Resources/models/map/scene.gltf";
-	
-	// Load in models
-	Model model((parentDir + modelPath).c_str());
+	std::string tree_object = "/TargetPractice/Resources/models/tree/scene.gltf";
+	std::string earth_object = "/TargetPractice/Resources/models/map/scene.gltf";
+	std::string target_object = "/TargetPractice/Resources/models/target/scene.gltf";
+	std::string steve_object = "/TargetPractice/Resources/models/steve/scene.gltf";
+	std::string weapon_pov_object = "/TargetPractice/Resources/models/weapon/scene.gltf";
 
 	sf::SoundBuffer buffer;
 	if (!buffer.loadFromFile((parentDir + "/TargetPractice/Resources/sounds/doom.ogg").c_str())) {
@@ -210,7 +215,114 @@ int main()
 	}
 
 
+	//Positions for the earth cube 
+	std::vector<glm::vec3> earthCubePositions; 
 
+	//Fill the positions
+	for (float i = -52.0f; i <= 52.0f; i += 2.0f) {
+		for (float j = -52.0f; j <= 52.0f; j += 2.0f) {
+			//Add positions on the edge
+			earthCubePositions.push_back(glm::vec3(j, 0.0f, i));
+		}
+	}
+
+	const unsigned int earthCubeNumber = earthCubePositions.size();
+	std::vector <glm::mat4> earthCubeInstanceMatrix;
+	for (size_t i = 0; i < earthCubeNumber; i += 1) {
+		glm::quat rotation = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		glm::mat4 rot = glm::mat4_cast(rotation);
+		glm::mat4 sca = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+		glm::mat4 trans = glm::translate(glm::mat4(1.0f), earthCubePositions[i]);
+
+		earthCubeInstanceMatrix.push_back(trans * rot * sca);
+	}
+
+
+	//Matrices for the tree
+	std::vector<glm::vec3> treePositions; 
+
+	// Llenar las posiciones
+	for (float i = -50.0f; i <= 50.0f; i += 5.0f) {
+		for (float j = -50.0f; j <= 50.0f; j += 5.0f) {
+			//Add positions on the edge
+			if ((i == -50.0f || i == 50.0f || j == -50.0f || j == 50.0f)) {
+				treePositions.push_back(glm::vec3(j, 0.0f, i));
+			}
+		}
+	}
+
+	const unsigned int treeNumber = treePositions.size();
+	std::vector <glm::mat4> treeInstanceMatrix;
+	for (size_t i = 0; i < treeNumber; i += 1) {
+		glm::quat rotation = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		glm::mat4 rot = glm::mat4_cast(rotation);
+		glm::mat4 sca = glm::scale(glm::mat4(1.0f), glm::vec3(5.0f, 5.0f, 5.0f));
+		glm::mat4 trans = glm::translate(glm::mat4(1.0f), treePositions[i]);
+
+		treeInstanceMatrix.push_back(trans * rot * sca);
+	}
+
+
+	//Matrices for the target
+	std::vector<glm::vec3> targetPositions{
+		glm::vec3(30.0f,1.7f,-30.0f),
+		glm::vec3(20.0f,1.7f,-30.0f),
+		glm::vec3(10.0f,1.7f,-30.0f),
+		glm::vec3(0.0f,1.7f,-30.0f),
+		glm::vec3(-10.0f,1.7f,-30.0f),
+		glm::vec3(-20.0f,1.7f,-30.0f),
+		glm::vec3(-30.0f,1.7f,-30.0f)
+	};
+
+
+
+	const unsigned int targetNumber = targetPositions.size();
+	std::vector <glm::mat4> targetInstanceMatrix;
+	for (size_t i = 0; i < targetNumber; i += 1) {
+		glm::quat rotation = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 rot = glm::mat4_cast(rotation);
+		glm::mat4 sca = glm::scale(glm::mat4(1.0f), glm::vec3(0.01f, 0.01f, 0.01f));
+		glm::mat4 trans = glm::translate(glm::mat4(1.0f), targetPositions[i]);
+
+		targetInstanceMatrix.push_back(trans * rot * sca);
+	}
+
+
+	//Matrices for the steve
+	std::vector<glm::vec3> stevePositions{
+		glm::vec3(300.0f,  3.0f,  30.0f),
+		glm::vec3(20.0f,  3.0f,  30.0f),
+		glm::vec3(10.0f,  3.0f,  30.0f),
+		glm::vec3(0.0f,  3.0f,  30.0f),
+		glm::vec3(-10.0f,  3.0f,  30.0f),
+		glm::vec3(-20.0f,  3.0f,  30.0f),
+		glm::vec3(-30.0f,  3.0f,  30.0f)
+	};
+
+	const unsigned int steveNumber = stevePositions.size();
+	std::vector <glm::mat4> steveInstanceMatrix;
+	for (size_t i = 0; i < steveNumber; i += 1) {
+		glm::mat4 rot = glm::mat4(1.0f);
+		rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		rot = glm::rotate(rot, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		rot = glm::rotate(rot, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		glm::mat4 sca = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f));
+		glm::mat4 trans = glm::translate(glm::mat4(1.0f), stevePositions[i]);
+
+		steveInstanceMatrix.push_back(trans * rot * sca);
+	}
+	// Load in models
+	Model earthCube((parentDir + earth_object).c_str(), earthCubeNumber, earthCubeInstanceMatrix);
+	Model tree((parentDir + tree_object).c_str(), treeNumber, treeInstanceMatrix);
+	Model target((parentDir + target_object).c_str(), targetNumber, targetInstanceMatrix);
+	Model steve((parentDir + steve_object).c_str(), steveNumber, steveInstanceMatrix);
+	Model pov((parentDir + weapon_pov_object).c_str());
+
+	//Transform matrix for pov object
+	glm::mat4 rot = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::vec3 sca = glm::vec3(0.3f, 0.3f, 0.3f);
+	glm::vec3 trans = glm::vec3(camera.Position.x, 0.21f, camera.Position.z);
+	float angle = 0.0f;
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -223,11 +335,20 @@ int main()
 		// Handles camera inputs (delete this if you have disabled VSync)
 		camera.Inputs(window);
 		// Updates and exports the camera matrix to the Vertex Shader
-		camera.updateMatrix(45.0f, 0.1f, 1000.0f);
+		camera.updateMatrix(45.0f, 0.1f, 200.0f);
 
 
-		// Draw the normal model
-		model.Draw(shaderProgram, camera);
+		multipleShader.Activate();
+		tree.Draw(multipleShader, camera);
+		earthCube.Draw(multipleShader, camera);
+		target.Draw(multipleShader, camera);
+		steve.Draw(multipleShader, camera);
+		shaderProgram.Activate();
+		trans = camera.Position / 16.34f;
+
+		trans.y = 0.21f;
+		rot = glm::rotate(rot, glm::radians(camera.Orientation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+		pov.Draw(shaderProgram, camera, trans, rot, sca);
 
 		// Since the cubemap will always have a depth of 1.0, we need that equal sign so it doesn't get discarded
 		glDepthFunc(GL_LEQUAL);
