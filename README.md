@@ -4,9 +4,12 @@
 - In this project, we use OpenGL because it is not widely used today for the creation of games or 3D virtual tours, which is understandable since there are other more used, optimized, and easier-to-use options.
 - Currently, this project has been a challenge for the involved team members since none of us had used this technology before, which was a disadvantage in that sense.
 - In this project, we are using the following libraries: 
-1. model.h
-2. audio.hpp
-3. shaderclass
+1. GLFW
+2. stbimage
+3. glad
+4. json
+5. glm
+6. SFLM
 
 among others. This repository contains the libraries used in the project.
 
