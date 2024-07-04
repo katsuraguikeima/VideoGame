@@ -17,11 +17,11 @@ among others. This repository contains the libraries used in the project.
 
 Project Preparation 
 =============
-For the project preparation, we have this video which, although it is in Spanish, is short but explanatory on how we will install our libraries and configure our directories.
+For the project preparation, we have this video which, is short but explanatory on how we will install our libraries and configure our directories.
 
-[Video in youtube ](https://www.youtube.com/watch?v=SAS1iXSkRt4)
+[Video in youtube ](https://youtu.be/TOPvFvL_GRY?si=_erA--F7_AyNiBX7)
 
-Some of the things we must consider for these configurations are that the project is made in Visual Studio 2022, and if you use a different version, we cannot guarantee it will run correctly. Therefore, we recommend using Visual Studio 2022.
+Some of the things we must consider for these configurations are that the project is made in Visual Studio 2019, and if you use a different version, we cannot guarantee it will run correctly. Therefore, we recommend using Visual Studio 2019.
 
 To better understand this project in its final phase, you can find the completed project in the targetPractice folder. To execute it correctly, you should open the file named TargetPractice.sln, and on the right side, in the header files, there is one named main.cpp. Double-click it to open the code, and then run it from main.cpp.
 
