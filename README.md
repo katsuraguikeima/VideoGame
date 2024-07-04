@@ -25,6 +25,7 @@ Some of the things we must consider for these configurations are that the projec
 
 To better understand this project in its final phase, you can find the completed project in the targetPractice folder. To execute it correctly, you should open the file named TargetPractice.sln, and on the right side, in the header files, there is one named main.cpp. Double-click it to open the code, and then run it from main.cpp.
 
+demonstration video: [Video](https://www.youtube.com/watch?v=wOaeedA1XrQ)
 
 ###Contributors
                 
