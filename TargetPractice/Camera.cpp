@@ -34,6 +34,9 @@ void Camera::Matrix(Shader& shader, const char* uniform)
 
 void Camera::Inputs(GLFWwindow* window)
 {
+	//Limited positions
+	Position.x = glm::clamp(Position.x, -50.0f, 50.0f);
+	Position.z = glm::clamp(Position.z, -50.0f, 50.0f);
 	// Handles key inputs
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
