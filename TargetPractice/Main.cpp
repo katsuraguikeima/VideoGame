@@ -132,6 +132,15 @@ int main()
 
 	// Reproduce el sonido
 	sound.setLoop(true);
+	sf::SoundBuffer parent;
+	if (!parent.loadFromFile((parentDir + "/TargetPractice/Resources/sounds/gunshot.ogg").c_str())) {
+		std::cerr << "Error al cargar el archivo de sonido" << std::endl;
+		return -1;
+	}
+
+	sf::Sound listen;
+	listen.setBuffer(parent);
+
 
 	sound.play();
 
@@ -337,6 +346,9 @@ int main()
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateMatrix(45.0f, 0.1f, 200.0f);
 
+		if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) {
+			listen.play();
+		}
 
 		multipleShader.Activate();
 		tree.Draw(multipleShader, camera);
