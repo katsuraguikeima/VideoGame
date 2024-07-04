@@ -133,7 +133,7 @@ int main()
 	// Reproduce el sonido
 	sound.setLoop(true);
 	sf::SoundBuffer parent;
-	if (!parent.loadFromFile((parentDir + "/TargetPractice/Resources/sounds/gunshot.ogg").c_str())) {
+	if (!parent.loadFromFile((parentDir + "/TargetPractice/Resources/sounds/doom.ogg").c_str())) {
 		std::cerr << "Error al cargar el archivo de sonido" << std::endl;
 		return -1;
 	}
@@ -250,7 +250,7 @@ int main()
 	//Matrices for the tree
 	std::vector<glm::vec3> treePositions; 
 
-	// Llenar las posiciones
+	//Fill the positions
 	for (float i = -50.0f; i <= 50.0f; i += 5.0f) {
 		for (float j = -50.0f; j <= 50.0f; j += 5.0f) {
 			//Add positions on the edge
@@ -299,7 +299,7 @@ int main()
 
 	//Matrices for the steve
 	std::vector<glm::vec3> stevePositions{
-		glm::vec3(300.0f,  3.0f,  30.0f),
+		glm::vec3(30.0f,  3.0f,  30.0f),
 		glm::vec3(20.0f,  3.0f,  30.0f),
 		glm::vec3(10.0f,  3.0f,  30.0f),
 		glm::vec3(0.0f,  3.0f,  30.0f),
@@ -330,8 +330,7 @@ int main()
 	//Transform matrix for pov object
 	glm::mat4 rot = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::vec3 sca = glm::vec3(0.3f, 0.3f, 0.3f);
-	glm::vec3 trans = glm::vec3(camera.Position.x, 0.21f, camera.Position.z);
-	float angle = 0.0f;
+	glm::vec3 trans = glm::vec3(0.0f, 0.21f, 0.0f);
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -356,10 +355,10 @@ int main()
 		target.Draw(multipleShader, camera);
 		steve.Draw(multipleShader, camera);
 		shaderProgram.Activate();
-		trans = camera.Position / 16.34f;
+		trans = camera.Position / camera.reduction;
 
 		trans.y = 0.21f;
-		rot = glm::rotate(rot, glm::radians(camera.Orientation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+		rot = glm::rotate(rot, glm::radians(camera.Orientation.x), glm::vec3(0.0f, -1.0f, 0.0f));
 		pov.Draw(shaderProgram, camera, trans, rot, sca);
 
 		// Since the cubemap will always have a depth of 1.0, we need that equal sign so it doesn't get discarded
